@@ -1,12 +1,11 @@
 package com.api.todoapi.models;
 
+import com.api.todoapi.dtos.UserDTO;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,8 +14,8 @@ import java.util.List;
 @Entity
 @Table(name = "users")
 @Getter
-@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class User {
     public User(String username, String password) {
         this.username = username;
@@ -24,23 +23,28 @@ public class User {
         this.tasks = new ArrayList<>();
     }
 
+    public void updateFromDTO(UserDTO userDTO) {
+        this.username = userDTO.username();
+        this.password = userDTO.password();
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NotBlank
-    @Size(min = 3, max = 50)
     @Column(unique = true, nullable = false, length = 50, updatable = false)
-    @NotBlank
     private String username;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @Size(min = 8, max = 255)
-    @NotBlank
     @Column(nullable = false)
     private String password;
 
     @OneToMany(mappedBy = "user")
     private List<Task> tasks;
+
+    @Override
+    public String toString() {
+        return username;
+    }
 
 }
