@@ -19,7 +19,6 @@ public class Task {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @NotBlank
     private long id;
 
     @ManyToOne
@@ -27,7 +26,6 @@ public class Task {
     private User user;
 
     @Setter
-    @NotBlank
     @Column(nullable = false)
     private String description;
 

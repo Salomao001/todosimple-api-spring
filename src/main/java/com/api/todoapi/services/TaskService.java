@@ -24,18 +24,23 @@ public class TaskService {
         return taskRepository.findById(id).orElseThrow(() -> new RuntimeException("Tarefa não encontrada"));
     }
 
+    public List<Task> findAllByUserId(long id) {
+        return taskRepository.findAllByUser_id(id);
+    }
+
     @Transactional
     public Task create(TaskDTO taskDTO) {
         var user = userService.findById(taskDTO.user_id());
-        var task = new Task(user, taskDTO.descripton());
+        var task = new Task(user, taskDTO.description());
         return taskRepository.save(task);
     }
 
     @Transactional
-    public Task update(TaskDTO taskDTO, long id) {
+    public String update(TaskDTO taskDTO, long id) {
         var task = findById(id);
-        task.setDescription(taskDTO.descripton());
-        return taskRepository.save(task);
+        task.setDescription(taskDTO.description());
+        taskRepository.save(task);
+        return String.format("Descrição atualizada com sucesso: \n%s", task.getDescription());
     }
 
     public String delete(long id) {
