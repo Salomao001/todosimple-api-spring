@@ -17,9 +17,9 @@ public class UserService {
     private UserRepository userRepository;
 
     @Autowired
-    private TaskService taskService;
+    private TaskRepository taskRepository;
 
-    public User findById(long id) {
+    public User findById(long id) throws Exception {
         Optional<User> user = userRepository.findById(id);
         return user.orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
     }
@@ -32,17 +32,16 @@ public class UserService {
 
     @Transactional
     public User update(UserDTO userDTO, long id) throws Exception {
-        var user = findById(id);
+        var user = this.findById(id);
         user.updateFromDTO(userDTO);
 
         return userRepository.save(user);
     }
 
-
-    public String delete(long id) {
-        var user = findById(id);
+    public String delete(long id) throws Exception {
+        var user = this.findById(id);
         if (!user.getTasks().isEmpty()) {
-            taskService.deleteAll(user.getTasks());
+            taskRepository.deleteAll(user.getTasks());
         }
         userRepository.delete(user);
         return String.format("usuário: %s deletado com sucesso", user.toString());
