@@ -30,4 +30,5 @@ public class Task {
     @NotBlank
     @Column(nullable = false)
     private String description;
+
 }
