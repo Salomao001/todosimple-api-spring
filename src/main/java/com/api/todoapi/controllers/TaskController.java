@@ -14,6 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/tasks")
 @Validated
+@CrossOrigin(origins = "*")
 public class TaskController {
 
     private final TaskService taskService;
@@ -29,6 +30,7 @@ public class TaskController {
     }
 
     @GetMapping("/user/{userId}")
+    @CrossOrigin(origins = "*")
     public ResponseEntity<List<Task>> getAllByUserId(@PathVariable long userId) {
         var tasks = taskService.findAllByUserId(userId);
         return ResponseEntity.ok(tasks);
