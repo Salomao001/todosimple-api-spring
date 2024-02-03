@@ -5,10 +5,10 @@ import com.api.todoapi.models.Task;
 import com.api.todoapi.repositories.TaskRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class TaskService {
@@ -17,6 +17,7 @@ public class TaskService {
     private TaskRepository taskRepository;
 
     @Autowired
+    @Lazy
     private UserService userService;
 
     public Task findById(long id) {

@@ -2,12 +2,13 @@ package com.api.todoapi.services;
 
 import com.api.todoapi.dtos.UserDTO;
 import com.api.todoapi.models.User;
-import com.api.todoapi.repositories.TaskRepository;
 import com.api.todoapi.repositories.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -17,7 +18,12 @@ public class UserService {
     private UserRepository userRepository;
 
     @Autowired
+    @Lazy
     private TaskService taskService;
+
+    public List<User> findAll() {
+        return userRepository.findAll();
+    }
 
     public User findById(long id) {
         Optional<User> user = userRepository.findById(id);
@@ -31,13 +37,12 @@ public class UserService {
     }
 
     @Transactional
-    public User update(UserDTO userDTO, long id) throws Exception {
+    public String update(UserDTO userDTO, long id) {
         var user = findById(id);
         user.updateFromDTO(userDTO);
-
-        return userRepository.save(user);
+        userRepository.save(user);
+        return "Usuário atualizado com sucesso";
     }
-
 
     public String delete(long id) {
         var user = findById(id);
