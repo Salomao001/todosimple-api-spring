@@ -9,7 +9,6 @@ import lombok.Setter;
 @Entity
 @Table(name = "tasks")
 @Getter
-@Setter
 @NoArgsConstructor
 public class Task {
 
@@ -27,6 +26,7 @@ public class Task {
     @JoinColumn(name = "user_id", nullable = false, updatable = false)
     private User user;
 
+    @Setter
     @NotBlank
     @Column(nullable = false)
     private String description;
