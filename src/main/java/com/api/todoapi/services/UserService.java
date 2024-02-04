@@ -1,6 +1,7 @@
 package com.api.todoapi.services;
 
 import com.api.todoapi.dtos.UserDTO;
+import com.api.todoapi.exceptions.ObjectNotFoundException;
 import com.api.todoapi.models.User;
 import com.api.todoapi.repositories.UserRepository;
 import jakarta.transaction.Transactional;
@@ -27,7 +28,7 @@ public class UserService {
 
     public User findById(long id) {
         Optional<User> user = userRepository.findById(id);
-        return user.orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+        return user.orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado"));
     }
 
     @Transactional
