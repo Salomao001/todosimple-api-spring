@@ -40,6 +40,12 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody @Valid UserDTO userDTO) {
+        var token = userService.login(userDTO);
+        return ResponseEntity.ok(token);
+    }
+
     @Validated(UserDTO.UpdateUser.class)
     @PutMapping("/{id}")
     public ResponseEntity<String> update(@RequestBody @Valid UserDTO userDTO, @PathVariable long id) {

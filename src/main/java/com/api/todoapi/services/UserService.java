@@ -5,9 +5,13 @@ import com.api.todoapi.dtos.UserDTO;
 import com.api.todoapi.exceptions.ObjectNotFoundException;
 import com.api.todoapi.models.User;
 import com.api.todoapi.repositories.UserRepository;
+import com.api.todoapi.security.JWTUtil;
+import com.api.todoapi.security.UserSecurityDetails;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +20,12 @@ import java.util.Optional;
 
 @Service
 public class UserService {
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JWTUtil jwtUtil;
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -36,6 +46,11 @@ public class UserService {
         return user.orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado"));
     }
 
+    public User findByUsername(String username) {
+        Optional<User> user = userRepository.findByUsername(username);
+        return user.orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado"));
+    }
+
     @Transactional
     public User create(UserDTO userDTO) {
         var user = new User(userDTO.username(), userDTO.password());
@@ -43,6 +58,15 @@ public class UserService {
         user.addProfile(UserRole.USER);
 
         return userRepository.save(user);
+    }
+
+    public String login(UserDTO userDTO) {
+        var user = new UsernamePasswordAuthenticationToken(userDTO.username(), userDTO.password());
+        var auth = authenticationManager.authenticate(user);
+
+        var token = jwtUtil.generateToken((UserSecurityDetails) auth.getPrincipal());
+
+        return token;
     }
 
     @Transactional
